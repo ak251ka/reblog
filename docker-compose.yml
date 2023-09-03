@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:alpine3.18
     volumes:
-      - dev-db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=dbdev
       - POSTGRES_USER=userdbdev
@@ -18,7 +18,7 @@ services:
       sh -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
-      - dev-web-data:/app/media
+      - web-data:/app/media
     environment:
       - DB_HOST=db
       - DB_NAME=dbdev
@@ -40,5 +40,6 @@ services:
     ports:
       - 3000:3000
 volumes:
-  dev-db-data:
-  dev-web-data:
+  db-data:
+  web-data:
+  front-data:
