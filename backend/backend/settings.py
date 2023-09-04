@@ -26,11 +26,12 @@ SECRET_KEY = 'django-insecure-rd8ckm86(cj948(7glpi7p!dllh)9km3cpd0!le#@3td9)6ald
 DEBUG = os.environ.get('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
-
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,6 +83,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
+        'PORT': '5432',
     }
 }
 

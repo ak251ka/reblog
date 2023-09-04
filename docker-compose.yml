@@ -2,6 +2,7 @@
 version: "3.9"
 services:
   db:
+    restart: always
     image: postgres:alpine3.18
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -9,16 +10,23 @@ services:
       - POSTGRES_DB=dbdev
       - POSTGRES_USER=userdbdev
       - POSTGRES_PASSWORD=userdbdevpasword
+    ports:
+      - 5432:5432
+    networks:
+      - dv-net
+
   backend:
+    restart: always
     build:
       context: ./backend
       args:
         - DEV=true
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python3 manage.py waitfordb && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
       - web-data:/app/media
+      - front-data:/app/static
     environment:
       - DB_HOST=db
       - DB_NAME=dbdev
@@ -29,16 +37,26 @@ services:
       - db
     ports:
       - 8000:8000
+    networks:
+      - dv-net
   frontend:
+    restart: always
     build: ./frontend
     volumes:
       - ./frontend:/app
+      - front-data:/app/public
     command: >
       sh -c "npm start"
     depends_on:
       - backend
     ports:
       - 3000:3000
+    networks:
+      - dv-net
+networks:
+  dv-net:
+    driver: bridge
+
 volumes:
   db-data:
   web-data:

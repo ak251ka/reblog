@@ -1,12 +1,14 @@
+"""
+user model module
+"""
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
-# Create your models here.
 
 
 class UserManager(BaseUserManager):
+
     def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError('Email must be set')
@@ -48,7 +50,8 @@ class User(AbstractUser):
         max_length=50,
         unique=True,
         help_text=_(
-            'Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only.'
+            'Required. 50 characters or fewer. Letters, ' +
+            'digits and @/./+/-/_ only.'
         ),
         validators=[AbstractUser.username_validator],
         error_messages={
@@ -57,7 +60,6 @@ class User(AbstractUser):
     )
     phone_number = PhoneNumberField(blank=True)
     is_phone_validated = models.BooleanField(default=False)
-    is_email_validated = models.BooleanField(default=False)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
